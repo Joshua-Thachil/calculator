@@ -167,23 +167,39 @@ class _HomePageState extends State<HomePage> {
   void Calculate()
   {
     setState(() {
-      //parse the expression string
-      Parser p = Parser();
-      Expression exp = p.parse(output);
-      
-      // Bind variables:
-      ContextModel cm = ContextModel();
-      
-      // Evaluate expression:
-      double eval = exp.evaluate(EvaluationType.REAL, cm);
-      output = eval.toString();
-      
-      if(output[output.length-1] == '0' && output[output.length - 2] == '.')
+      try 
       {
-        output = output.substring(0, output.length - 2);
-      }
+        //parse the expression string
+        Parser p = Parser();
+        Expression exp = p.parse(output);
+        
+        // Bind variables:
+        ContextModel cm = ContextModel();
+        
+        // Evaluate expression:
+        double eval = exp.evaluate(EvaluationType.REAL, cm);
+        output = eval.toString();
+        
+        if(output[output.length-1] == '0' && output[output.length - 2] == '.')
+        {
+          output = output.substring(0, output.length - 2);
+        }
 
-      CheckSize(); 
+        CheckSize();
+      }
+      
+      catch(e)
+      {
+        String err = e.toString();
+        // print("error: ");
+        // print(err);
+
+        if(err == "RangeError (index): Invalid value: Valid value range is empty: -1" || parenthesis == true)
+        {
+          charSize = 55;
+          output = "Invalid Expression";
+        }
+      } 
     });
   }
 
